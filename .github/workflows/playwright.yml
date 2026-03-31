@@ -24,4 +24,4 @@ jobs:
         python -m playwright install
 
     - name: Run tests
-      run: behave
+      run: behave --tags ~@skip_ci

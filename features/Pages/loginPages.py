@@ -17,3 +17,5 @@ class loginPages:
 
     async def verifyLogin(self):
         await self.page.get_by_title("All Warehouses").wait_for(timeout=10000)
+        print("Login successful")
+        
