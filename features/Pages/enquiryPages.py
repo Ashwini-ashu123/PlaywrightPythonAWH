@@ -95,6 +95,8 @@ class enquiryPages:
     print("save button is clicked")
    
 
+   
+
   async def navigateToOpp(self):
     await self.page.get_by_role("button", name="Submit").click()
     print("submit button is clicked")
