@@ -10,18 +10,35 @@ jobs:
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4   
 
     - name: Setup Python
-      uses: actions/setup-python@v4
+      uses: actions/setup-python@v5  
       with:
         python-version: '3.11'
 
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install -r requirement.txt
+        pip install -r requirements.txt   # ❗ FIXED (was requirement.txt)
+        pip install behave
         python -m playwright install
 
+    
+    - name: Create state.zip
+      shell: powershell
+      run: |
+        [System.IO.File]::WriteAllBytes("state.zip", [System.Convert]::FromBase64String("${{ secrets.STATE_JSON }}"))
+
+    
+    - name: Extract state.json
+      shell: powershell
+      run: |
+        Expand-Archive -Path state.zip -DestinationPath . -Force
+
+    - name: Verify state.json exists
+      run: dir state.json
+
+    # ✅ Run tests
     - name: Run tests
-      run: behave --tags ~@skip_ci
+      run: python -m behave --tags ~@skip_ci
