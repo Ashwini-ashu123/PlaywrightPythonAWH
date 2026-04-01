@@ -6,6 +6,8 @@ Given go to the salesforce test environment
 Then give the username and password
 And Click on the Login button
 And verify the user is successfully able to login into the salesforce application
+
+Scenario: Enquiry to Opportunity flow
 Then click on the Enquiry tab and click on the New button
 And fill the mandatory fields and click on the save button
 And verify the enquiry is created successfully
