@@ -9,39 +9,42 @@ jobs:
     runs-on: self-hosted
 
     steps:
+    - name: Clean workspace (IMPORTANT for self-hosted runner)
+      shell: powershell
+      run: |
+        if (Test-Path ".git") { git reset --hard }
+        if (Test-Path ".git") { git clean -fdx }
+
     - name: Checkout code
       uses: actions/checkout@v4
       with:
         clean: true
+        fetch-depth: 1
 
     - name: Setup Python
-      uses: actions/setup-python@v5  
+      uses: actions/setup-python@v5
       with:
         python-version: '3.11'
 
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install -r requirement.txt   
+        pip install -r requirement.txt
         pip install behave
-        python -m playwright install
+        python -m playwright install --with-deps
 
-    
-    - name: Create state.zip
+    - name: Restore state.json
       shell: powershell
       run: |
-        [System.IO.File]::WriteAllBytes("state.zip", [System.Convert]::FromBase64String("${{ secrets.STATE_JSON }}"))
-
-    
-    - name: Extract state.json
-      shell: powershell
-      run: |
+        [System.IO.File]::WriteAllBytes(
+          "state.zip",
+          [System.Convert]::FromBase64String("${{ secrets.STATE_JSON }}")
+        )
         Expand-Archive -Path state.zip -DestinationPath . -Force
 
     - name: Verify state.json exists
       run: dir state.json
 
-    
     - name: Run tests
       run: python -m behave --tags ~@skip_ci
       timeout-minutes: 15
