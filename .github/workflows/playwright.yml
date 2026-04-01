@@ -39,6 +39,12 @@ jobs:
     - name: Verify state.json exists
       run: dir state.json
 
-    # ✅ Run tests
+    
     - name: Run tests
       run: python -m behave --tags ~@skip_ci
+
+    - name: Upload screenshot
+      uses: actions/upload-artifact@v4
+      with:
+      name: debug-screenshot
+      path: debug.png

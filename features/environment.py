@@ -5,27 +5,27 @@ def before_scenario(context, scenario):
     context.loop = asyncio.new_event_loop()
     asyncio.set_event_loop(context.loop)
 
-    HEADLESS = False  
+    HEADLESS = True   
 
     async def setup():
         context.playwright = await async_playwright().start()
 
-        context.browser = await context.playwright.chromium.launch_persistent_context(
-            user_data_dir="C:/Users/Aswini/playwright-profile",
-            headless=HEADLESS
-        )
+       
+        context.browser = await context.playwright.chromium.launch(headless=HEADLESS)
 
-        context.page = context.browser.pages[0] if context.browser.pages else await context.browser.new_page()
+       
+        context.context = await context.browser.new_context(storage_state="state.json")
 
-      
+        context.page = await context.context.new_page()
+
         await context.page.goto("https://test.salesforce.com/home/home.jsp")
 
-   
     context.loop.run_until_complete(setup())
 
 
 def after_scenario(context, scenario):
     async def teardown():
+        await context.context.close()
         await context.browser.close()
         await context.playwright.stop()
 
