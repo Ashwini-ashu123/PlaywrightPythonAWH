@@ -25,7 +25,7 @@ jobs:
         python -m playwright install --with-deps
 
     - name: Run tests
-      run: python -m behave --tags ~@skip_ci
+      run: python -m behave
       timeout-minutes: 15
 
     - name: Upload screenshot (if failure)

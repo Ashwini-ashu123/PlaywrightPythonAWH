@@ -1,6 +1,6 @@
 Feature: Salesforce login
 
-@skip_ci
+
 Scenario: Login into the salesforce uat org
 Given go to the salesforce test environment 
 Then give the username and password
