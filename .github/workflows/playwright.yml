@@ -9,19 +9,19 @@ jobs:
     runs-on: self-hosted
 
     steps:
-    # 🔥 Step 1: Safe clean (avoid git crash)
-    - name: Clean workspace manually
+    # 🔥 Step 1: Clean workspace
+    - name: Clean workspace
       shell: cmd
       run: |
-        echo Cleaning workspace...
-        rmdir /s /q * 2>nul || exit 0
+        echo Cleaning...
+        rmdir /s /q PlaywrightPythonAWH 2>nul
 
-    # 🔥 Step 2: Checkout (fixed)
-    - name: Checkout code
-      uses: actions/checkout@v4
-      with:
-        clean: false
-        fetch-depth: 1
+    # 🔥 Step 2: Clone repo manually (NO checkout action)
+    - name: Clone repository
+      shell: cmd
+      run: |
+        git clone https://github.com/Ashwini-ashu123/PlaywrightPythonAWH.git
+        cd PlaywrightPythonAWH
 
     # 🔹 Step 3: Setup Python
     - name: Setup Python
@@ -33,6 +33,7 @@ jobs:
     - name: Install dependencies
       shell: cmd
       run: |
+        cd PlaywrightPythonAWH
         pip install -r requirement.txt
         pip install behave
         python -m playwright install
@@ -41,13 +42,14 @@ jobs:
     - name: Run tests
       shell: cmd
       run: |
+        cd PlaywrightPythonAWH
         python -m behave
 
-    # 🔹 Step 6: Upload screenshots (always)
+    # 🔹 Step 6: Upload screenshots
     - name: Upload screenshots
       if: always()
       uses: actions/upload-artifact@v4
       with:
         name: failure-screenshots
-        path: screenshots/
+        path: PlaywrightPythonAWH/screenshots/
         if-no-files-found: ignore
