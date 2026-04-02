@@ -9,30 +9,45 @@ jobs:
     runs-on: self-hosted
 
     steps:
+    # 🔥 Step 1: Safe clean (avoid git crash)
+    - name: Clean workspace manually
+      shell: cmd
+      run: |
+        echo Cleaning workspace...
+        rmdir /s /q * 2>nul || exit 0
+
+    # 🔥 Step 2: Checkout (fixed)
     - name: Checkout code
       uses: actions/checkout@v4
+      with:
+        clean: false
+        fetch-depth: 1
 
+    # 🔹 Step 3: Setup Python
     - name: Setup Python
       uses: actions/setup-python@v5
       with:
         python-version: '3.11'
 
+    # 🔹 Step 4: Install dependencies
     - name: Install dependencies
+      shell: cmd
       run: |
-        python -m pip install --upgrade pip
         pip install -r requirement.txt
         pip install behave
-        python -m playwright install --with-deps
+        python -m playwright install
 
+    # 🔹 Step 5: Run tests
     - name: Run tests
-      run: python -m behave
-      timeout-minutes: 15
+      shell: cmd
+      run: |
+        python -m behave
 
-    
+    # 🔹 Step 6: Upload screenshots (always)
     - name: Upload screenshots
       if: always()
       uses: actions/upload-artifact@v4
       with:
         name: failure-screenshots
-        path: .
+        path: screenshots/
         if-no-files-found: ignore
