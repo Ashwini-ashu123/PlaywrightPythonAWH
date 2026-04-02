@@ -21,8 +21,21 @@ def clickLoginButton(context):
 
 @step("verify the user is successfully able to login into the salesforce application")
 def verifyLogin(context):
-    context.loop.run_until_complete(context.lp.verifyLogin())
+    try:
+        context.loop.run_until_complete(context.lp.verifyLogin())
 
+    except Exception as e:
+        # 🔥 FORCE screenshot here (THIS WILL DEFINITELY RUN)
+        context.loop.run_until_complete(
+            context.page.screenshot(
+                path="failure.png",
+                full_page=True
+            )
+        )
+        print("📸 Screenshot captured in step")
+        raise e
+    
+    
 @step("click on the Enquiry tab and click on the New button")
 def clickEnquiryTab(context):
     context.ep = ep(context.page)
