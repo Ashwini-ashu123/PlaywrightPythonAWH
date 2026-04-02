@@ -25,19 +25,21 @@ def before_scenario(context, scenario):
 
 
 def after_step(context, step):
-    """
-    Takes screenshot automatically when a step fails
-    """
     if step.status == "failed":
         os.makedirs("screenshots", exist_ok=True)
 
-        if hasattr(context, "page"):
-            context.page.screenshot(
-                path=f"screenshots/{step.name}.png",
-                full_page=True
-            )
+        try:
+            if hasattr(context, "page") and context.page:
+                context.loop.run_until_complete(
+                    context.page.screenshot(
+                        path=f"screenshots/{step.name}.png",
+                        full_page=True
+                    )
+                )
+                print(f"Screenshot saved for failed step: {step.name}")
 
-        print(f"❌ Screenshot captured for failed step: {step.name}")
+        except Exception as e:
+            print(f"Screenshot failed: {e}")
 
 
 def after_scenario(context, scenario):
