@@ -18,7 +18,7 @@ def before_scenario(context, scenario):
         context.playwright = await async_playwright().start()
 
         # Launch browser (headless can be set False for debugging)
-        context.browser = await context.playwright.chromium.launch(headless=False)
+        context.browser = await context.playwright.chromium.launch(headless=True)
 
         # If state.json exists, it will reuse login/session
         try:
