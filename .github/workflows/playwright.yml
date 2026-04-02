@@ -28,10 +28,11 @@ jobs:
       run: python -m behave
       timeout-minutes: 15
 
-    - name: Upload screenshot (if failure)
+    
+    - name: Upload failure screenshots
       if: always()
       uses: actions/upload-artifact@v4
       with:
-        name: debug-screenshot
-        path: debug.png
+        name: failure-screenshots
+        path: screenshots/
         if-no-files-found: ignore
