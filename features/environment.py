@@ -24,35 +24,46 @@ def before_scenario(context, scenario):
     context.loop.run_until_complete(setup())
 
 
+# 🔥 MAIN FIX — RELIABLE SCREENSHOT HOOK
 def after_step(context, step):
     if step.status == "failed":
         os.makedirs("screenshots", exist_ok=True)
 
-        try:
-            if hasattr(context, "page") and context.page:
-                context.loop.run_until_complete(
-                    context.page.screenshot(
+        async def take_screenshot():
+            try:
+                if hasattr(context, "page") and context.page:
+                    await context.page.wait_for_timeout(1000)  # stabilize page
+                    await context.page.screenshot(
                         path=f"screenshots/{step.name}.png",
                         full_page=True
                     )
-                )
-                print(f"Screenshot saved for failed step: {step.name}")
+                    print(f"✅ Screenshot captured: {step.name}")
+            except Exception as e:
+                print(f"❌ Screenshot failed: {e}")
 
-        except Exception as e:
-            print(f"Screenshot failed: {e}")
+        context.loop.run_until_complete(take_screenshot())
 
 
 def after_scenario(context, scenario):
 
     async def teardown():
-        if hasattr(context, "context"):
-            await context.context.close()
+        try:
+            # 🔥 IMPORTANT: wait if failed (prevents early close)
+            if scenario.status == "failed" and hasattr(context, "page"):
+                print("⏳ Waiting before closing browser (failure case)")
+                await context.page.wait_for_timeout(3000)
 
-        if hasattr(context, "browser"):
-            await context.browser.close()
+            if hasattr(context, "context"):
+                await context.context.close()
 
-        if hasattr(context, "playwright"):
-            await context.playwright.stop()
+            if hasattr(context, "browser"):
+                await context.browser.close()
+
+            if hasattr(context, "playwright"):
+                await context.playwright.stop()
+
+        except Exception as e:
+            print(f"Teardown error: {e}")
 
     context.loop.run_until_complete(teardown())
 
