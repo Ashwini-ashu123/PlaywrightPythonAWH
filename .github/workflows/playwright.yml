@@ -14,7 +14,7 @@ jobs:
       shell: cmd
       run: |
         echo Cleaning...
-        rmdir /s /q PlaywrightPythonAWH 2>nul
+        if exist PlaywrightPythonAWH rmdir /s /q PlaywrightPythonAWH
 
     # 🔥 Step 2: Clone repo manually (NO checkout action)
     - name: Clone repository
