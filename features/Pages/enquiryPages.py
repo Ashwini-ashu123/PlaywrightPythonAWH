@@ -9,7 +9,7 @@ class enquiryPages:
     try:
         await self.page.wait_for_timeout(20000)
 
-        await self.page.screenshot(path="debug_enquiry_start.png")
+        
 
         await self.page.get_by_title("All Warehouses").wait_for(timeout=10000)
         await self.page.get_by_title("Enquiries").click()
