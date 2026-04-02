@@ -6,13 +6,23 @@ class enquiryPages:
     self.page = page
 
   async def clickEnquiryTab(self):
-    await self.page.wait_for_timeout(20000)
-    await self.page.screenshot(path="debug.png")
-    await self.page.get_by_title("All Warehouses").wait_for(timeout=10000)
-    await self.page.get_by_title("Enquiries").click()
-    print("enquiry tab is clicked")
-    await self.page.get_by_role("button", name="New").click()
-    print("new button is clicked")
+    try:
+        await self.page.wait_for_timeout(20000)
+
+        await self.page.screenshot(path="debug_enquiry_start.png")
+
+        await self.page.get_by_title("All Warehouses").wait_for(timeout=10000)
+        await self.page.get_by_title("Enquiries").click()
+
+        print("enquiry tab is clicked")
+
+        await self.page.get_by_role("button", name="New").click()
+        print("new button is clicked")
+
+    except Exception as e:
+        await self.page.screenshot(path="debug_enquiry_error.png", full_page=True)
+        raise e
+
 
   async def screen1(self):
     await self.page.get_by_placeholder("Enter Mobile Number").fill("2345654544")

@@ -16,8 +16,13 @@ class loginPages:
         await self.page.click("#Login")
 
     async def verifyLogin(self):
+     try:
         await self.page.get_by_title("All Warehouses").wait_for(timeout=10000)
-        await self.page.screenshot(path="debug.png")
+        await self.page.screenshot(path="debug_login.png")
         print("Login successful")
         await self.page.wait_for_timeout(5000)
         await self.page.context.storage_state(path="state.json")
+
+     except Exception as e:
+        await self.page.screenshot(path="debug_login_error.png", full_page=True)
+        raise e
