@@ -7,7 +7,7 @@ class loginPages:
         await self.page.goto("https://test.salesforce.com/")
 
     async def enterUsername(self):
-        await self.page.fill("#username", "awhris@salesforce.com.uat")
+        await self.page.fill("#username", "ashwinimca96@gmail.com")
 
     async def enterPassword(self):
         await self.page.fill("#password", "RIS@2026")
