@@ -33,7 +33,7 @@ class enquiryPages:
     print("next button is clicked")
 
   async def screen2(self):
-    await self.page.get_by_placeholder("Last Name").fill(enquiryPages.enquiryName)
+    await self.page.locator("//input[@name='lastName']").fill(enquiryPages.enquiryName)
     print("last name is entered")
     await self.page.get_by_role("button", name="Save").click()
     print("save button is clicked")

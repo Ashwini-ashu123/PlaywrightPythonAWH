@@ -11,7 +11,7 @@ def before_all(context):
 def before_scenario(context, scenario):
     async def setup():
         context.playwright = await async_playwright().start()
-        context.browser = await context.playwright.chromium.launch(headless=True)
+        context.browser = await context.playwright.chromium.launch(headless=False)
         context.context = await context.browser.new_context()
         context.page = await context.context.new_page()
 
