@@ -9,43 +9,41 @@ jobs:
     runs-on: self-hosted
 
     steps:
-    # 🔥 Step 1: Clean workspace
     - name: Clean workspace
       shell: cmd
       run: |
         echo Cleaning...
         if exist PlaywrightPythonAWH rmdir /s /q PlaywrightPythonAWH
 
-    # 🔥 Step 2: Clone repo manually (NO checkout action)
     - name: Clone repository
       shell: cmd
       run: |
         git clone https://github.com/Ashwini-ashu123/PlaywrightPythonAWH.git
-        cd PlaywrightPythonAWH
 
-    # 🔹 Step 3: Setup Python
-    - name: Setup Python
-      uses: actions/setup-python@v5
-      with:
-        python-version: '3.11'
+    - name: Set Python Path
+      shell: cmd
+      run: |
+        set PATH=C:\Users\Aswini\Desktop\runner\python311;C:\Users\Aswini\Desktop\runner\python311\Scripts;%PATH%
+        python --version
+        python -m pip --version
 
-    # 🔹 Step 4: Install dependencies
     - name: Install dependencies
       shell: cmd
       run: |
         cd PlaywrightPythonAWH
+        set PATH=C:\Users\Aswini\Desktop\runner\python311;C:\Users\Aswini\Desktop\runner\python311\Scripts;%PATH%
+        python -m pip install --upgrade pip
         pip install -r requirement.txt
         pip install behave
         python -m playwright install
 
-    # 🔹 Step 5: Run tests
     - name: Run tests
       shell: cmd
       run: |
         cd PlaywrightPythonAWH
+        set PATH=C:\Users\Aswini\Desktop\runner\python311;C:\Users\Aswini\Desktop\runner\python311\Scripts;%PATH%
         python -m behave
 
-    # 🔹 Step 6: Upload screenshots
     - name: Upload screenshots
       if: always()
       uses: actions/upload-artifact@v4
